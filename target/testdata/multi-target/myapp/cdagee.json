@@ -1,0 +1,1 @@
+{"depends_on":["infra"],"tags":["deploy"],"serial":true,"targets":{"staging":{"tags":["staging"]},"prod":{"depends_on":[":staging"],"tags":["prod"]}}}

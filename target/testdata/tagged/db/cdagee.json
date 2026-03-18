@@ -1,0 +1,1 @@
+{"tags": ["deploy"], "depends_on": ["infra"]}

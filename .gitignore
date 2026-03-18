@@ -1,0 +1,10 @@
+# Build output
+cdagee
+*.test
+
+# Profiling
+cpu.prof
+mem.prof
+
+# Benchmarks
+/tmp/bench-*.txt
