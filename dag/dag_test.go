@@ -665,11 +665,20 @@ func TestExecuteMultiError(t *testing.T) {
 	errLeft := errors.New("left-broke")
 	errRight := errors.New("right-broke")
 
+	// Ensure both nodes start before either returns, so neither is skipped
+	// due to context cancellation from the other's failure.
+	var ready sync.WaitGroup
+	ready.Add(2)
+
 	err := d.Execute(context.Background(), func(ctx context.Context, id string, _ string, _ iter.Seq2[string, any]) (any, error) {
 		switch id {
 		case "left":
+			ready.Done()
+			ready.Wait()
 			return nil, errLeft
 		case "right":
+			ready.Done()
+			ready.Wait()
 			return nil, errRight
 		}
 		return nil, nil
