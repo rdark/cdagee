@@ -1,8 +1,9 @@
 # cdagee
 
-Concurrent Directed Acyclic Graph Execution Engine
+Like GNU parallel, but with DAGs — run commands across directories with
+dependency ordering and safe concurrency.
 
-A dependency-aware target runner for heterogeneous monorepos.
+**c**oncurrent **d**irected **a**cyclic **g**raph **e**xecution **e**ngine
 
 cdagee discovers targets (directories containing a `cdagee.json` marker file),
 builds a dependency DAG, and executes commands across them with correct ordering
