@@ -12,7 +12,9 @@ func TestPrefixWriterSingleLine(t *testing.T) {
 	var mu sync.Mutex
 	pw := newPrefixWriter("target-a", &out, &mu)
 
-	fmt.Fprint(pw, "hello world\n")
+	if _, err := fmt.Fprint(pw, "hello world\n"); err != nil {
+		t.Fatal(err)
+	}
 
 	if got := out.String(); got != "[target-a] hello world\n" {
 		t.Errorf("got %q, want %q", got, "[target-a] hello world\n")
@@ -24,7 +26,9 @@ func TestPrefixWriterMultiLine(t *testing.T) {
 	var mu sync.Mutex
 	pw := newPrefixWriter("tgt", &out, &mu)
 
-	fmt.Fprint(pw, "line1\nline2\nline3\n")
+	if _, err := fmt.Fprint(pw, "line1\nline2\nline3\n"); err != nil {
+		t.Fatal(err)
+	}
 
 	want := "[tgt] line1\n[tgt] line2\n[tgt] line3\n"
 	if got := out.String(); got != want {
@@ -37,17 +41,23 @@ func TestPrefixWriterPartialLines(t *testing.T) {
 	var mu sync.Mutex
 	pw := newPrefixWriter("x", &out, &mu)
 
-	fmt.Fprint(pw, "hel")
+	if _, err := fmt.Fprint(pw, "hel"); err != nil {
+		t.Fatal(err)
+	}
 	if out.Len() != 0 {
 		t.Errorf("expected no output yet, got %q", out.String())
 	}
 
-	fmt.Fprint(pw, "lo\nwor")
+	if _, err := fmt.Fprint(pw, "lo\nwor"); err != nil {
+		t.Fatal(err)
+	}
 	if got := out.String(); got != "[x] hello\n" {
 		t.Errorf("after second write: got %q, want %q", got, "[x] hello\n")
 	}
 
-	fmt.Fprint(pw, "ld\n")
+	if _, err := fmt.Fprint(pw, "ld\n"); err != nil {
+		t.Fatal(err)
+	}
 	want := "[x] hello\n[x] world\n"
 	if got := out.String(); got != want {
 		t.Errorf("after third write: got %q, want %q", got, want)
@@ -59,7 +69,9 @@ func TestPrefixWriterFlush(t *testing.T) {
 	var mu sync.Mutex
 	pw := newPrefixWriter("f", &out, &mu)
 
-	fmt.Fprint(pw, "trailing")
+	if _, err := fmt.Fprint(pw, "trailing"); err != nil {
+		t.Fatal(err)
+	}
 	if out.Len() != 0 {
 		t.Errorf("expected no output before flush, got %q", out.String())
 	}
@@ -99,7 +111,10 @@ func TestPrefixWriterConcurrent(t *testing.T) {
 	write := func(pw *prefixWriter, prefix string) {
 		defer wg.Done()
 		for i := 0; i < n; i++ {
-			fmt.Fprintf(pw, "line %d\n", i)
+			if _, err := fmt.Fprintf(pw, "line %d\n", i); err != nil {
+				t.Error(err)
+				return
+			}
 		}
 	}
 
