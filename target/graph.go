@@ -34,7 +34,7 @@ func BuildGraph(targets []Target) (*dag.DAG[Target], error) {
 
 	for i, tgt := range targets {
 		if _, ok := added[i]; !ok {
-			continue // skip duplicates already reported
+			continue
 		}
 		for _, dep := range tgt.Config.DependsOn {
 			if _, ok := index[dep]; !ok {

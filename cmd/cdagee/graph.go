@@ -20,7 +20,9 @@ func runGraph(args []string) {
 		fatalf("graph: structured output is not supported; output is DOT format")
 	}
 
-	result, err := target.Discover(cf.root)
+	rootDir := cf.absRoot()
+
+	result, err := target.Discover(rootDir)
 	if err != nil {
 		fatalf("graph: %v", err)
 	}
@@ -34,7 +36,7 @@ func runGraph(args []string) {
 	fmt.Println("digraph targets {")
 	fmt.Println("  rankdir=LR;")
 
-	// Sort for deterministic output
+	// Sort for deterministic output.
 	sorted := slices.Clone(targets)
 	slices.SortFunc(sorted, func(a, b target.Target) int {
 		return strings.Compare(a.ID, b.ID)
@@ -48,7 +50,7 @@ func runGraph(args []string) {
 		fmt.Printf("  %q%s;\n", tgt.ID, attrs)
 	}
 
-	// Render edges from the DAG (includes synthetic serial chain edges).
+	// Render edges.
 	type edge struct{ from, to string }
 	var edges []edge
 	for from, to := range g.Edges() {
@@ -60,6 +62,7 @@ func runGraph(args []string) {
 		}
 		return strings.Compare(a.to, b.to)
 	})
+
 	for _, e := range edges {
 		fmt.Printf("  %q -> %q;\n", e.from, e.to)
 	}

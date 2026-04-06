@@ -55,7 +55,9 @@ func runExec(args []string) {
 	}
 
 	// Discover -> Filter -> BuildGraph.
-	result, err := target.Discover(cf.root)
+	rootDir := cf.absRoot()
+
+	result, err := target.Discover(rootDir)
 	if err != nil {
 		fatalf("exec: %v", err)
 	}

@@ -261,6 +261,25 @@ func TestGraphSerial(t *testing.T) {
 	}
 }
 
+func TestGraphEdges(t *testing.T) {
+	root := t.TempDir()
+	writeCdageeJSON(t, root, "networking", `{}`)
+	writeCdageeJSON(t, root, "app", `{"depends_on":["networking"]}`)
+	writeCdageeJSON(t, root, "database", `{"depends_on":["networking"]}`)
+
+	stdout, _, code := run(t, "graph", "--root", root)
+	if code != 0 {
+		t.Fatalf("expected exit 0, got %d", code)
+	}
+
+	if !strings.Contains(stdout, `"networking" -> "app"`) {
+		t.Errorf("expected networking -> app edge, got:\n%s", stdout)
+	}
+	if !strings.Contains(stdout, `"networking" -> "database"`) {
+		t.Errorf("expected networking -> database edge, got:\n%s", stdout)
+	}
+}
+
 func TestGraphUnexpectedArgs(t *testing.T) {
 	_, stderr, code := run(t, "graph", "extra-arg")
 	if code != 1 {

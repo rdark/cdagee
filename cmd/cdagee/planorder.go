@@ -17,7 +17,9 @@ func runPlanOrder(args []string) {
 	resolveOutput(cf, fs)
 	checkNoArgs(fs)
 
-	result, err := target.Discover(cf.root)
+	rootDir := cf.absRoot()
+
+	result, err := target.Discover(rootDir)
 	if err != nil {
 		fatalf("plan-order: %v", err)
 	}

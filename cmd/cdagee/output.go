@@ -5,8 +5,10 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
+
 )
 
 type outputFormat int
@@ -149,6 +151,15 @@ func addTagsFlag(fs *flag.FlagSet) func() []string {
 		}
 		return strings.Split(tagsFlag, ",")
 	}
+}
+
+// absRoot returns the absolute path of cf.root, exiting on error.
+func (cf *commonFlags) absRoot() string {
+	abs, err := filepath.Abs(cf.root)
+	if err != nil {
+		fatalf("%v", err)
+	}
+	return abs
 }
 
 func checkNoArgs(fs *flag.FlagSet) {
